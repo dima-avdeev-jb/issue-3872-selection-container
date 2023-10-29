@@ -1,39 +1,36 @@
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun App() {
-    MaterialTheme {
-        var greetingText by remember { mutableStateOf("Hello, World!") }
-        var showImage by remember { mutableStateOf(false) }
-        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Button(onClick = {
-                greetingText = "Hello, ${getPlatformName()}"
-                showImage = !showImage
-            }) {
-                Text(greetingText)
-            }
-            AnimatedVisibility(showImage) {
-                Image(
-                    painterResource("compose-multiplatform.xml"),
-                    contentDescription = "Compose Multiplatform icon"
+    Column {
+
+        Text("Text not in selection container. Meets expectation of default cursor.")
+
+        SelectionContainer {
+            Text("Text in selection container. Meets expectation of text input cursor.")
+        }
+
+        Text(
+            "Text not in selection container, with hand cursor modifier. Meets expectation of hand cursor.",
+            modifier = Modifier.pointerHoverIcon(
+                PointerIcon.Hand
+            )
+        )
+
+        SelectionContainer {
+            Text(
+                "Text in selection container, with hand cursor. Does NOT meet expectation. Because the Text is the child of SelectionContainer, we expect the cursor of the child to override the parent. Therefore, we expect a hand cursor here. However, we get a text input cursor.",
+                modifier = Modifier.pointerHoverIcon(
+                    PointerIcon.Hand
                 )
-            }
+            )
         }
     }
 }
